@@ -1,0 +1,12 @@
+{
+  "full_name": 1.0,
+  "city": 0.3,
+  "email": 1.0,
+  "phone": 1.0,
+  "account_id": 1.0,
+  "vehicle_id": 0.8,
+  "organization": 0.4,
+  "travel_history": 0.8,
+  "mobility_summary": 0.7,
+  "health_note": 1.0
+}

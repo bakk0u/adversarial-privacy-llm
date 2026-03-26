@@ -1,0 +1,42 @@
+[
+  {
+    "strategy_name": "direct_baseline",
+    "num_cases": 300,
+    "num_leaks": 158,
+    "leakage_rate": 0.5267,
+    "avg_leakage_score": 1.3167,
+    "avg_utility_score": 0.9167
+  },
+  {
+    "strategy_name": "least_to_most",
+    "num_cases": 300,
+    "num_leaks": 93,
+    "leakage_rate": 0.31,
+    "avg_leakage_score": 0.775,
+    "avg_utility_score": 0.9167
+  },
+  {
+    "strategy_name": "policy_first_structured",
+    "num_cases": 300,
+    "num_leaks": 98,
+    "leakage_rate": 0.3267,
+    "avg_leakage_score": 0.8167,
+    "avg_utility_score": 0.9167
+  },
+  {
+    "strategy_name": "skeleton_of_thought",
+    "num_cases": 300,
+    "num_leaks": 90,
+    "leakage_rate": 0.3,
+    "avg_leakage_score": 0.75,
+    "avg_utility_score": 0.9167
+  },
+  {
+    "strategy_name": "tree_of_thoughts",
+    "num_cases": 300,
+    "num_leaks": 79,
+    "leakage_rate": 0.2633,
+    "avg_leakage_score": 0.6583,
+    "avg_utility_score": 0.9167
+  }
+]
