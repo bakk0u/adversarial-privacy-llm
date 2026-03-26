@@ -2,7 +2,3 @@
 __pycache__/
 *.pyc
 .venv/
-results/runs/
-results/tables/
-results/plots/
-results/reports/
