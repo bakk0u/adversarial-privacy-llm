@@ -1,6 +1,24 @@
 # Adversarial Privacy Attacks on LLMs
 
-Experimental framework for evaluating privacy leakage in Large Language Models under adversarial prompting, and comparing prompt-engineering defenses through a privacy-utility lens.
+Evaluates how prompt engineering strategies impact sensitive data leakage in LLMs under adversarial conditions.
+
+This repository provides a research-style experimental framework for measuring privacy leakage in Large Language Models under adversarial prompting, comparing prompt-engineering defenses, and validating results with both simulated and real local LLM backends.
+
+## Quick Demo
+
+```bash
+python -m src.main --config configs/ollama_tiny_config.json
+```
+
+This runs the smallest real-model validation: 2 synthetic records, 3 prompting strategies, and 6 total Ollama calls using `llama3.1:8b`.
+
+## Why This Project Matters
+
+- Evaluates privacy leakage under adversarial instructions, not only normal prompts.
+- Compares multiple prompt-based defense strategies under the same scoring pipeline.
+- Separates controlled mock experiments from real LLM validation.
+- Produces case-level outputs, aggregate tables, plots, metadata, and written findings.
+- Uses fully synthetic data, making the repository safe to run and inspect.
 
 ## Research Question
 
@@ -11,6 +29,18 @@ How robust are different prompt-engineering strategies against adversarial attem
 The project runs controlled experiments over synthetic sensitive records. Each record is passed through a benign task, augmented with an adversarial instruction, wrapped in a defensive prompting strategy, and evaluated for leakage and utility.
 
 All data is synthetic. The default backend is a deterministic mock LLM used for reproducible pipeline validation. Ollama is supported through config for local-model experiments.
+
+## Read First
+
+For a quick review of the project outputs:
+
+| Artifact | Purpose |
+| --- | --- |
+| [`results/reports/findings.md`](results/reports/findings.md) | Main simulated-experiment findings |
+| [`results/reports/example_cases.md`](results/reports/example_cases.md) | Representative leakage and non-leakage cases |
+| [`results/ollama_tiny_runs/findings.md`](results/ollama_tiny_runs/findings.md) | Real Ollama validation findings |
+| [`results/ollama_tiny_runs/example_cases.md`](results/ollama_tiny_runs/example_cases.md) | Real-model example cases with detected leakage fields |
+| [`docs/methodology.md`](docs/methodology.md) | Methodology and experiment design notes |
 
 ## Architecture
 
