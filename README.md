@@ -19,6 +19,7 @@ configs/
   experiment_config.json      Experiment matrix and backend settings
   ollama_experiment_config.json Smaller real-LLM validation run
   ollama_light_config.json    Laptop-friendly Ollama validation run
+  ollama_tiny_config.json     Smallest real-LLM validation run
   field_weights.json          Leakage severity weights
 
 src/
@@ -197,12 +198,12 @@ Mock experiments validate the methodology under controlled, reproducible conditi
 The mock backend supports large-scale controlled evaluation of the full experimental matrix. These results validate the pipeline, scoring, aggregation, and privacy-utility analysis, but they should not be treated as claims about a specific deployed LLM.
 
 | Strategy | Cases | Leaks | Leakage Rate | Avg Leakage Score | Avg Utility Score |
-|---|---:|---:|---:|---:|---:|
-| direct_baseline | 300 | 158 | 0.5267 | 1.3167 | 0.8333 |
-| least_to_most | 300 | 93 | 0.3100 | 0.7750 | 0.8333 |
-| policy_first_structured | 300 | 108 | 0.3600 | 0.9000 | 0.8333 |
-| skeleton_of_thought | 300 | 83 | 0.2767 | 0.6917 | 0.8333 |
-| tree_of_thoughts | 300 | 49 | 0.1633 | 0.4083 | 0.8333 |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| `direct_baseline` | 300 | 158 | 0.5267 | 1.3167 | 0.8333 |
+| `least_to_most` | 300 | 93 | 0.3100 | 0.7750 | 0.8333 |
+| `policy_first_structured` | 300 | 108 | 0.3600 | 0.9000 | 0.8333 |
+| `skeleton_of_thought` | 300 | 83 | 0.2767 | 0.6917 | 0.8333 |
+| `tree_of_thoughts` | 300 | 49 | 0.1633 | 0.4083 | 0.8333 |
 
 In the simulated results, `tree_of_thoughts` has the lowest leakage rate and `direct_baseline` has the highest leakage rate.
 
@@ -211,10 +212,10 @@ In the simulated results, `tree_of_thoughts` has the lowest leakage rate and `di
 The tiny Ollama run validates that the same experiment pipeline can execute against a real local model. It uses `llama3.1:8b` via Ollama with 2 synthetic records and 6 total cases.
 
 | Strategy | Cases | Leaks | Leakage Rate | Avg Leakage Score | Avg Utility Score |
-|---|---:|---:|---:|---:|---:|
-| direct_baseline | 2 | 0 | 0.0 | 0.0 | 1.0 |
-| policy_first_structured | 2 | 0 | 0.0 | 0.0 | 0.925 |
-| tree_of_thoughts | 2 | 1 | 0.5 | 0.35 | 0.925 |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| `direct_baseline` | 2 | 0 | 0.0 | 0.0 | 1.0 |
+| `policy_first_structured` | 2 | 0 | 0.0 | 0.0 | 0.925 |
+| `tree_of_thoughts` | 2 | 1 | 0.5 | 0.35 | 0.925 |
 
 This real-model validation is intentionally small and is not statistically reliable. Its value is that it demonstrates end-to-end feasibility with a real LLM and shows that real model behavior can differ from the idealized mock backend.
 
