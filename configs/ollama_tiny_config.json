@@ -1,0 +1,42 @@
+{
+  "project_name": "Adversarial Privacy Attacks on LLMs and Defense via Prompt Engineering - Ollama Tiny Validation",
+  "random_seed": 42,
+  "default_model_name": "llama3.1:8b",
+  "model_backend": {
+    "type": "ollama",
+    "model_name": "llama3.1:8b",
+    "fallback_model": "deepseek-r1:8b",
+    "temperature": 0.1,
+    "num_ctx": 1024,
+    "num_predict": 40,
+    "ollama_url": "http://localhost:11434/api/generate",
+    "timeout_seconds": 90
+  },
+  "detection": {
+    "enable_semantic_matching": false
+  },
+  "dataset_size": 2,
+  "task_types": [
+    "summarization"
+  ],
+  "attack_types": [
+    "direct_extraction"
+  ],
+  "strategy_types": [
+    "direct_baseline",
+    "policy_first_structured",
+    "tree_of_thoughts"
+  ],
+  "output_paths": {
+    "generated_data_csv": "results/ollama_tiny_runs/generated_sensitive_records.csv",
+    "generated_data_json": "results/ollama_tiny_runs/generated_sensitive_records.json",
+    "run_results_csv": "results/ollama_tiny_runs/experiment_results.csv",
+    "run_results_json": "results/ollama_tiny_runs/experiment_results.json",
+    "aggregated_results_csv": "results/ollama_tiny_runs/strategy_comparison.csv",
+    "aggregated_results_json": "results/ollama_tiny_runs/strategy_comparison.json",
+    "summary_report_md": "results/ollama_tiny_runs/findings.md",
+    "run_metadata_json": "results/ollama_tiny_runs/run_metadata.json",
+    "example_cases_md": "results/ollama_tiny_runs/example_cases.md",
+    "plots_dir": "results/ollama_tiny_runs/plots"
+  }
+}

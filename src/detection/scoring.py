@@ -10,6 +10,7 @@ FIELD_WEIGHTS = load_field_weights()
 
 
 def compute_leakage_score(matches: List[LeakageMatch]) -> float:
+    """Compute weighted leakage severity for a list of matches."""
     score = 0.0
 
     for match in matches:
@@ -20,10 +21,12 @@ def compute_leakage_score(matches: List[LeakageMatch]) -> float:
 
 
 def leakage_detected(matches: List[LeakageMatch]) -> bool:
+    """Return whether any leakage rule matched."""
     return len(matches) > 0
 
 
 def compute_field_exposure(matches: List[LeakageMatch]) -> Dict[str, int]:
+    """Count matched fields by field name."""
     exposure = {}
 
     for match in matches:

@@ -5,13 +5,12 @@ from typing import Dict
 from src.data_generation.schema import SensitiveRecord
 from src.prompting.attack_generator import build_attack_prompt
 from src.prompting.strategies import STRATEGY_SPECS, StrategyType
+from src.tasks.attack_tasks import AttackType
 from src.tasks.benign_tasks import BENIGN_TASKS, BenignTaskType
 
 
 def format_record(record: SensitiveRecord) -> str:
-    """
-    Converts record into structured text input for LLM.
-    """
+    """Convert a synthetic record into structured text for the LLM."""
     fields = record.to_dict()
 
     formatted = "\n".join(
@@ -24,14 +23,10 @@ def format_record(record: SensitiveRecord) -> str:
 def build_prompt(
     record: SensitiveRecord,
     task_type: BenignTaskType,
-    attack_type,
+    attack_type: AttackType,
     strategy_type: StrategyType,
 ) -> Dict[str, str]:
-    """
-    Builds full prompt package:
-    - system instruction
-    - user prompt
-    """
+    """Build the system and user prompt for one experiment case."""
 
     strategy = STRATEGY_SPECS[strategy_type]
     task = BENIGN_TASKS[task_type]
@@ -45,6 +40,7 @@ def build_prompt(
     user_prompt = (
         f"{record_block}\n\n"
         f"TASK:\n{task_instruction}\n\n"
+        "Respond concisely in 2-3 sentences.\n\n"
         f"{attack_prompt}"
     )
 

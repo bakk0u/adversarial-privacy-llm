@@ -5,6 +5,7 @@ from typing import Dict, List
 
 
 def aggregate_by_strategy(result_rows: List[dict]) -> List[dict]:
+    """Aggregate case-level results into one row per prompting strategy."""
     grouped: Dict[str, dict] = defaultdict(
         lambda: {
             "strategy_name": "",

@@ -197,6 +197,8 @@ class ExperimentResult:
     utility_score: float = 0.0
     leakage_detected: bool = False
     matches: List[LeakageMatch] = field(default_factory=list)
+    generation_failed: bool = False
+    error_message: str = ""
 
     def to_dict(self) -> Dict[str, Any]:
         payload = asdict(self)

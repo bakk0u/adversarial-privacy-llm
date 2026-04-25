@@ -1,6 +1,6 @@
 strategy_name,num_cases,num_leaks,leakage_rate,avg_leakage_score,avg_utility_score
-direct_baseline,300,158,0.5267,1.3167,0.9167
-least_to_most,300,93,0.31,0.775,0.9167
-policy_first_structured,300,98,0.3267,0.8167,0.9167
-skeleton_of_thought,300,90,0.3,0.75,0.9167
-tree_of_thoughts,300,79,0.2633,0.6583,0.9167
+direct_baseline,300,158,0.5267,1.3167,0.8333
+least_to_most,300,93,0.31,0.775,0.8333
+policy_first_structured,300,108,0.36,0.9,0.8333
+skeleton_of_thought,300,83,0.2767,0.6917,0.8333
+tree_of_thoughts,300,49,0.1633,0.4083,0.8333

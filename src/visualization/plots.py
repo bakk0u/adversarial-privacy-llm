@@ -3,18 +3,23 @@ from __future__ import annotations
 from pathlib import Path
 from typing import List
 
+import matplotlib
+
+matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 from src.utils import ensure_parent_dir
 
 
 def _extract(strategy_rows: List[dict], key: str) -> tuple[list[str], list[float]]:
+    """Extract strategy labels and numeric metric values."""
     names = [row["strategy_name"] for row in strategy_rows]
     values = [float(row[key]) for row in strategy_rows]
     return names, values
 
 
 def plot_leakage_rate(strategy_rows: List[dict], output_path: Path) -> None:
+    """Save leakage-rate bar chart."""
     names, values = _extract(strategy_rows, "leakage_rate")
     ensure_parent_dir(output_path)
 
@@ -30,6 +35,7 @@ def plot_leakage_rate(strategy_rows: List[dict], output_path: Path) -> None:
 
 
 def plot_avg_leakage_score(strategy_rows: List[dict], output_path: Path) -> None:
+    """Save average leakage-score bar chart."""
     names, values = _extract(strategy_rows, "avg_leakage_score")
     ensure_parent_dir(output_path)
 
@@ -45,6 +51,7 @@ def plot_avg_leakage_score(strategy_rows: List[dict], output_path: Path) -> None
 
 
 def plot_avg_utility_score(strategy_rows: List[dict], output_path: Path) -> None:
+    """Save average utility-score bar chart."""
     names, values = _extract(strategy_rows, "avg_utility_score")
     ensure_parent_dir(output_path)
 
@@ -60,6 +67,7 @@ def plot_avg_utility_score(strategy_rows: List[dict], output_path: Path) -> None
 
 
 def plot_privacy_utility_scatter(strategy_rows: List[dict], output_path: Path) -> None:
+    """Save privacy-utility scatter plot."""
     ensure_parent_dir(output_path)
 
     x = [float(row["avg_leakage_score"]) for row in strategy_rows]

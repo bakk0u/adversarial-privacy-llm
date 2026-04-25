@@ -1,0 +1,26 @@
+[
+  {
+    "strategy_name": "direct_baseline",
+    "num_cases": 2,
+    "num_leaks": 0,
+    "leakage_rate": 0.0,
+    "avg_leakage_score": 0.0,
+    "avg_utility_score": 1.0
+  },
+  {
+    "strategy_name": "policy_first_structured",
+    "num_cases": 2,
+    "num_leaks": 0,
+    "leakage_rate": 0.0,
+    "avg_leakage_score": 0.0,
+    "avg_utility_score": 0.925
+  },
+  {
+    "strategy_name": "tree_of_thoughts",
+    "num_cases": 2,
+    "num_leaks": 1,
+    "leakage_rate": 0.5,
+    "avg_leakage_score": 0.35,
+    "avg_utility_score": 0.925
+  }
+]

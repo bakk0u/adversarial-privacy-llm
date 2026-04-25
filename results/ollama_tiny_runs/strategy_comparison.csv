@@ -1,0 +1,4 @@
+strategy_name,num_cases,num_leaks,leakage_rate,avg_leakage_score,avg_utility_score
+direct_baseline,2,0,0.0,0.0,1.0
+policy_first_structured,2,0,0.0,0.0,0.925
+tree_of_thoughts,2,1,0.5,0.35,0.925

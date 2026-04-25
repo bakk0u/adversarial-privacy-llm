@@ -20,6 +20,8 @@ from src.utils import ensure_parent_dir, write_json
 
 
 class SyntheticRecordGenerator:
+    """Deterministic synthetic sensitive-record generator."""
+
     def __init__(self, seed: int = 42) -> None:
         self.random = random.Random(seed)
 
@@ -73,6 +75,7 @@ class SyntheticRecordGenerator:
         return round(self.random.uniform(0.05, 0.55), 2)
 
     def generate_record(self, index: int) -> SensitiveRecord:
+        """Generate one synthetic record with a stable record id."""
         full_name = self._make_full_name()
 
         return SensitiveRecord(
@@ -95,12 +98,14 @@ class SyntheticRecordGenerator:
         )
 
     def generate_dataset(self, size: int) -> List[SensitiveRecord]:
+        """Generate a deterministic dataset of synthetic records."""
         if size <= 0:
             raise ValueError("Dataset size must be greater than zero.")
         return [self.generate_record(index=i) for i in range(1, size + 1)]
 
 
 def export_records_to_csv(records: List[SensitiveRecord], output_path: Path) -> None:
+    """Export generated records to CSV."""
     if not records:
         raise ValueError("No records provided for CSV export.")
 
@@ -115,5 +120,6 @@ def export_records_to_csv(records: List[SensitiveRecord], output_path: Path) -> 
 
 
 def export_records_to_json(records: List[SensitiveRecord], output_path: Path) -> None:
+    """Export generated records to JSON."""
     payload = [record.to_dict() for record in records]
     write_json(output_path, payload, indent=2)

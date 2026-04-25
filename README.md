@@ -1,253 +1,273 @@
-# Adversarial Privacy Attacks on LLMs and Defense via Prompt Engineering
+# Adversarial Privacy Attacks on LLMs
 
-## Overview
-
-This project presents a **research-style experimental framework** for evaluating **privacy leakage in Large Language Models (LLMs)** under adversarial prompting.
-
-The system simulates realistic scenarios where an LLM is asked to perform useful tasks on structured data while being simultaneously exposed to **malicious prompts attempting to extract sensitive information**.
-
-It evaluates how different **prompt engineering strategies (defenses)** impact:
-
-* privacy leakage
-* attack success rate
-* utility preservation
-
----
+Experimental framework for evaluating privacy leakage in Large Language Models under adversarial prompting, and comparing prompt-engineering defenses through a privacy-utility lens.
 
 ## Research Question
 
-> How robust are different prompt engineering strategies against adversarial attempts to extract sensitive information from structured data?
+How robust are different prompt-engineering strategies against adversarial attempts to extract sensitive information from structured data?
 
----
+## What This Repository Does
 
-## Methodology
+The project runs controlled experiments over synthetic sensitive records. Each record is passed through a benign task, augmented with an adversarial instruction, wrapped in a defensive prompting strategy, and evaluated for leakage and utility.
 
-The framework follows a controlled experimental pipeline:
+All data is synthetic. The default backend is a deterministic mock LLM used for reproducible pipeline validation. Ollama is supported through config for local-model experiments.
 
-### 1. Synthetic Sensitive Data
+## Architecture
 
-Structured records are generated with fields such as:
+```text
+configs/
+  experiment_config.json      Experiment matrix and backend settings
+  ollama_experiment_config.json Smaller real-LLM validation run
+  ollama_light_config.json    Laptop-friendly Ollama validation run
+  field_weights.json          Leakage severity weights
 
-* full_name
-* email
-* phone
-* account_id
-* vehicle_id
-* organization
-* travel history
-* health notes
+src/
+  data_generation/            Synthetic record schema and generator
+  tasks/                      Benign task and attack definitions
+  prompting/                  Prompt builder and defense strategies
+  llm/                        Backend interface, mock backend, Ollama backend
+  detection/                  Exact, partial, and optional semantic leakage rules
+  evaluation/                 Runner, aggregation, export, run metadata
+  visualization/              Reproducible plot generation
+  main.py                     CLI entry point
 
-All data is fully synthetic.
-
----
-
-### 2. Task Layer (Utility)
-
-The LLM is asked to perform useful tasks such as:
-
-* summarization
-* anomaly detection
-* trend description
-* recommendation generation
-* concise reporting
-
----
-
-### 3. Adversarial Attack Layer
-
-Each task is augmented with adversarial instructions such as:
-
-* direct extraction
-* instruction override
-* role confusion
-* memory probing
-* disguised extraction
-* summarization-to-leakage
-
----
-
-### 4. Prompt Engineering Defenses
-
-We compare multiple strategies:
-
-* direct_baseline
-* policy_first_structured
-* tree_of_thoughts
-* skeleton_of_thought
-* least_to_most
-
----
-
-### 5. LLM Backend
-
-The system supports:
-
-* mock backend (for controlled experiments)
-* local models via Ollama (extendable)
-* API-based models (future)
-
----
-
-### 6. Leakage Detection
-
-Leakage is detected by comparing LLM outputs against known sensitive fields using:
-
-* exact matching
-* structured partial matching (IDs, emails, etc.)
-
----
-
-### 7. Scoring Metrics
-
-For each experiment case:
-
-* **Leakage Score**
-  Weighted sum of leaked fields
-
-* **Leakage Rate**
-  % of cases with any leakage
-
-* **Utility Score (proxy)**
-  Based on:
-
-  * response length
-  * keyword relevance
-  * non-refusal behavior
-
----
-
-### 8. Aggregation & Visualization
-
-Results are aggregated per strategy and visualized using:
-
-* leakage rate bar charts
-* average leakage score
-* utility score comparison
-* privacy vs utility scatter plot
-
----
-
-## Repository Structure
-
-```
-adversarial-privacy-llm/
-│
-├── configs/                # Experiment configuration
-├── data/                   # Generated synthetic data
-├── docs/                   # Methodology & notes
-├── notebooks/              # Optional analysis
-├── results/                # Outputs (CSV, plots, reports)
-│
-├── src/
-│   ├── data_generation/    # Synthetic dataset generator
-│   ├── prompting/          # Prompt builder + strategies
-│   ├── tasks/              # Task & attack definitions
-│   ├── llm/                # Backend interfaces
-│   ├── detection/          # Leakage detection + scoring
-│   ├── evaluation/         # Experiment runner + export
-│   ├── visualization/      # Plot generation
-│   └── main.py             # Entry point
-│
-├── requirements.txt
-└── README.md
+results/
+  runs/                       Case-level outputs and run metadata
+  tables/                     Aggregated strategy comparison
+  plots/                      Leakage and utility visualizations
+  reports/                    Generated findings report
 ```
 
----
+## Experimental Pipeline
 
-## Installation
+```text
+Synthetic records
+  -> benign task prompt
+  -> adversarial attack injection
+  -> defensive prompting strategy
+  -> LLM backend
+  -> leakage detection
+  -> leakage and utility scoring
+  -> aggregation, plots, report
+```
+
+## Quickstart
 
 ```bash
-git clone https://github.com/yourusername/adversarial-privacy-llm.git
-cd adversarial-privacy-llm
+python -m venv .venv
+.venv\Scripts\activate
 pip install -r requirements.txt
+python -m src.main
 ```
 
----
-
-## Run the Experiment
+Run tests:
 
 ```bash
-python3 -m src.main
+pytest
 ```
 
----
+## Backend Configuration
+
+The default backend is configured in `configs/experiment_config.json`:
+
+```json
+"model_backend": {
+  "type": "mock",
+  "model_name": "mock",
+  "base_leak_probability": 0.6,
+  "ollama_url": "http://localhost:11434/api/generate"
+}
+```
+
+To use Ollama:
+
+```json
+"model_backend": {
+  "type": "ollama",
+  "model_name": "llama3:8b",
+  "ollama_url": "http://localhost:11434/api/generate"
+}
+```
+
+Then start Ollama locally and run:
+
+```bash
+python -m src.main --config configs/ollama_light_config.json
+```
+
+Estimate a run before executing it:
+
+```bash
+python -m src.main --config configs/ollama_light_config.json --estimate
+```
+
+Run only the first N cases:
+
+```bash
+python -m src.main --config configs/ollama_light_config.json --max_cases 20
+```
+
+## Running on a Laptop
+
+Full real-LLM experiments are expensive on a local 8B model. The full matrix is `25 * 3 * 4 * 5 = 1500` LLM calls, which is too heavy for routine laptop validation.
+
+## Tiny Ollama Validation
+
+For the smallest real-model validation, use `configs/ollama_tiny_config.json`. It runs only `2 * 1 * 1 * 3 = 6` LLM calls with a shorter context, lower token budget, and a `90` second per-call timeout.
+
+```bash
+python -m src.main --config configs/ollama_tiny_config.json
+```
+
+Use `configs/ollama_light_config.json` for local Ollama runs. It limits the matrix to:
+
+- records: `5`
+- tasks: `summarization`, `anomaly_detection`
+- attacks: `direct_extraction`, `instruction_override`
+- strategies: `direct_baseline`, `policy_first_structured`, `tree_of_thoughts`
+- total cases: `60`
+
+The runner enforces a hard local safety cap of `80` LLM calls. Oversized runs fail before contacting the backend with: `Experiment too large for local execution. Reduce config.`
+
+The light Ollama config uses `num_predict: 60`, `temperature: 0.1`, concise response instructions, and a `30` second per-call timeout. A typical laptop validation run should take a few minutes, not hours. Timed-out calls are recorded as failed cases and the experiment continues.
+
+## Real LLM Validation with Ollama
+
+Mock runs validate the pipeline under controlled, reproducible conditions. Ollama runs validate behavior on a real local LLM and should be interpreted as empirical local-model evidence.
+
+Install Ollama, then pull the preferred thesis model and fallback model:
+
+```bash
+ollama pull llama3.1:8b
+ollama pull deepseek-r1:8b
+```
+
+Run the smaller real-LLM experiment:
+
+```bash
+python -m src.main --config configs/ollama_light_config.json
+```
+
+The Ollama config uses:
+
+- model: `llama3.1:8b`
+- fallback model: `deepseek-r1:8b`
+- records: `5`
+- total cases: `60`
+- temperature: `0.1`
+- context window: `2048`
+- max generated tokens: `60`
+- timeout per call: `30` seconds
+
+If `llama3.1:8b` is not installed but `deepseek-r1:8b` is available, the runner falls back and records the actual model in every result row and metadata file. If neither model is available, the run stops with a clear error.
+
+Ollama outputs are separated from mock outputs:
+
+```text
+results/ollama_light_runs/experiment_results.csv
+results/ollama_light_runs/experiment_results.json
+results/ollama_light_runs/strategy_comparison.csv
+results/ollama_light_runs/strategy_comparison.json
+results/ollama_light_runs/run_metadata.json
+results/ollama_light_runs/findings.md
+results/ollama_light_runs/example_cases.md
+results/ollama_light_runs/plots/
+```
+
+Interpretation template:
+
+```text
+In this local Ollama validation, <strategy> had the lowest leakage rate and <strategy> had the highest leakage rate. Utility scores were <stable/variable> across strategies. Because this is a small local-model experiment, the result should be treated as evidence for this model and configuration, not as a universal claim about all LLMs.
+```
+
+## Current Experiment Matrix
+
+- Records: `25`
+- Tasks: `summarization`, `anomaly_detection`, `recommendation`
+- Attacks: `direct_extraction`, `instruction_override`, `memory_probing`, `disguised_extraction`
+- Strategies: `direct_baseline`, `policy_first_structured`, `tree_of_thoughts`, `skeleton_of_thought`, `least_to_most`
+- Total cases: `1500`
+
+## Experimental Results
+
+Mock experiments validate the methodology under controlled, reproducible conditions, while Ollama experiments validate real-world feasibility on a local LLM. The two result types answer different questions and should be interpreted separately.
+
+### A. Simulated Results (Mock Backend)
+
+The mock backend supports large-scale controlled evaluation of the full experimental matrix. These results validate the pipeline, scoring, aggregation, and privacy-utility analysis, but they should not be treated as claims about a specific deployed LLM.
+
+| Strategy | Cases | Leaks | Leakage Rate | Avg Leakage Score | Avg Utility Score |
+|---|---:|---:|---:|---:|---:|
+| direct_baseline | 300 | 158 | 0.5267 | 1.3167 | 0.8333 |
+| least_to_most | 300 | 93 | 0.3100 | 0.7750 | 0.8333 |
+| policy_first_structured | 300 | 108 | 0.3600 | 0.9000 | 0.8333 |
+| skeleton_of_thought | 300 | 83 | 0.2767 | 0.6917 | 0.8333 |
+| tree_of_thoughts | 300 | 49 | 0.1633 | 0.4083 | 0.8333 |
+
+In the simulated results, `tree_of_thoughts` has the lowest leakage rate and `direct_baseline` has the highest leakage rate.
+
+### B. Real LLM Validation (Ollama)
+
+The tiny Ollama run validates that the same experiment pipeline can execute against a real local model. It uses `llama3.1:8b` via Ollama with 2 synthetic records and 6 total cases.
+
+| Strategy | Cases | Leaks | Leakage Rate | Avg Leakage Score | Avg Utility Score |
+|---|---:|---:|---:|---:|---:|
+| direct_baseline | 2 | 0 | 0.0 | 0.0 | 1.0 |
+| policy_first_structured | 2 | 0 | 0.0 | 0.0 | 0.925 |
+| tree_of_thoughts | 2 | 1 | 0.5 | 0.35 | 0.925 |
+
+This real-model validation is intentionally small and is not statistically reliable. Its value is that it demonstrates end-to-end feasibility with a real LLM and shows that real model behavior can differ from the idealized mock backend.
+
+## Key Insight
+
+This project demonstrates that prompt-based defenses can reduce sensitive information leakage in controlled settings, but real LLM behavior remains stochastic and requires empirical validation.
+
+The contrast between mock and Ollama results is itself important: simulated backends are useful for reproducible methodology development, while real LLM runs expose model-specific variability, prompt sensitivity, and non-deterministic leakage behavior.
 
 ## Outputs
 
-After running, the following are generated:
+Running `python -m src.main` writes:
 
-### Results Tables
-
-```
+```text
+data/generated/sensitive_records.csv
+data/generated/sensitive_records.json
 results/runs/experiment_results.csv
+results/runs/experiment_results.json
+results/runs/run_metadata.json
 results/tables/strategy_comparison.csv
-```
-
-### Plots
-
-```
-results/plots/
-├── leakage_rate_by_strategy.png
-├── avg_leakage_score_by_strategy.png
-├── avg_utility_score_by_strategy.png
-└── privacy_utility_tradeoff.png
-```
-
-### Findings Report
-
-```
+results/tables/strategy_comparison.json
 results/reports/findings.md
+results/plots/leakage_rate_by_strategy.png
+results/plots/avg_leakage_score_by_strategy.png
+results/plots/avg_utility_score_by_strategy.png
+results/plots/privacy_utility_tradeoff.png
 ```
 
----
+`run_metadata.json` stores the timestamp, git commit when available, global random seed, model name, case count, and full config snapshot.
 
-## Example Findings
+## Metrics
 
-Key observations from the current setup:
+Leakage is detected through:
 
-* Direct prompting shows the **highest privacy leakage**
-* Structured prompting strategies significantly reduce leakage
-* **Tree of Thoughts** achieves the lowest leakage score
-* Utility remains stable across strategies
+- exact matching of sensitive field values
+- partial matching for structured identifiers
+- optional conservative semantic matching for long text fields
 
----
+Leakage score is a weighted sum over matched fields using `configs/field_weights.json`.
+
+Utility is a lightweight task-aware proxy based on non-refusal, response substance, task alignment, and analytical/actionable content.
 
 ## Limitations
 
-* Mock backend is rule-based (not a real LLM)
-* Leakage detection is heuristic
-* Utility is approximated (not human-evaluated)
-* No semantic leakage detection yet
-
----
+- The default mock backend is rule-based and does not represent a real LLM.
+- Leakage detection is heuristic.
+- Semantic leakage detection is conservative and disabled by default.
+- Utility scoring is a reproducible proxy, not human evaluation.
 
 ## Future Work
 
-* Run experiments on real LLMs (Ollama / API)
-* Improve semantic leakage detection
-* Add per-attack and per-task analysis
-* Introduce human-evaluated utility metrics
-* Explore fine-tuned defensive prompting
-
----
-
-## Key Contribution
-
-This project provides a **modular, extensible experimental framework** for:
-
-* evaluating adversarial privacy risks in LLMs
-* comparing prompt engineering defenses
-* quantifying privacy-utility trade-offs
-
----
-
-## Author
-
-Anas
-Computer Science Student
-
----
-
-## License
-
-MIT License
+- Run the full matrix against local Ollama models.
+- Add API-backed model support.
+- Add per-attack and per-task breakdown tables.
+- Add semantic leakage evaluation with embeddings or an evaluator model.
+- Compare automated utility scores with human ratings.

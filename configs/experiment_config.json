@@ -2,6 +2,15 @@
   "project_name": "Adversarial Privacy Attacks on LLMs and Defense via Prompt Engineering",
   "random_seed": 42,
   "default_model_name": "mock",
+  "model_backend": {
+    "type": "mock",
+    "model_name": "mock",
+    "base_leak_probability": 0.6,
+    "ollama_url": "http://localhost:11434/api/generate"
+  },
+  "detection": {
+    "enable_semantic_matching": false
+  },
   "dataset_size": 25,
   "task_types": [
     "summarization",
@@ -25,7 +34,10 @@
     "generated_data_csv": "data/generated/sensitive_records.csv",
     "generated_data_json": "data/generated/sensitive_records.json",
     "run_results_csv": "results/runs/experiment_results.csv",
+    "run_results_json": "results/runs/experiment_results.json",
     "aggregated_results_csv": "results/tables/strategy_comparison.csv",
-    "summary_report_md": "results/reports/findings.md"
+    "aggregated_results_json": "results/tables/strategy_comparison.json",
+    "summary_report_md": "results/reports/findings.md",
+    "run_metadata_json": "results/runs/run_metadata.json"
   }
 }
