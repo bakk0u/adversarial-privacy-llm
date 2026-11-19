@@ -17,7 +17,7 @@ A research-style framework for comparing sensitive-field leakage and task utilit
 
 ## Project preview
 
-![Committed project artifact](results/ollama_tiny_runs/plots/leakage_rate_by_strategy.png)
+![Measured field leakage by strategy in the six-call local run](results/ollama_tiny_runs/plots/leakage_rate_by_strategy.png)
 
 ## How the pieces fit
 
